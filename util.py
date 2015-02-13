@@ -17,16 +17,21 @@ def re_to_postfix(infix):
     output = []
 
     i = 0;
-    l = len(infix)
-    while i < l:
+    while i < len(infix):
         e = infix[i]
+        print("Currently at " + infix)
+        print("             " + len(infix[:i])*" " + "^")
+        print("Output: " + str(output))
+        print("Stack: " + str(stack))
+        raw_input()
         if e in alphabet:
-            j = i
-            while j < l and infix[j] in alphabet:
-                j += 1
-            e = infix[i:j]
-            i = j
             output.append(e)
+            j = i + 1
+            while j < len(infix) and infix[j] in alphabet:
+                stack.append('.')
+                output.append(infix[j])
+                j += 1
+            i = j
             continue
         elif e in operators:
             o1 = e
@@ -39,7 +44,18 @@ def re_to_postfix(infix):
                     break
             stack.append(e)
         elif e == '(':
+            if not stack or stack[-1] != '.':
+                infix = infix[:i] + '.' + infix[i:len(infix)]
+                continue
             stack.append(e)
+            i += 1
+            j = i
+            while j < l and infix[j] in alphabet:
+                j += 1
+            if infix[i:j]:
+                output.append(infix[i:j])
+            i = j
+            continue
         elif e == ')':
             stack_element = stack.pop()
             while stack_element != '(':
