@@ -1,3 +1,4 @@
+from parsing_exceptions import MismatchedParentheses
 import string
 import sys
 
@@ -73,13 +74,22 @@ def re_to_postfix(infix):
         elif e == '(':
             stack.append(e)
         elif e == ')':
-            stack_element = stack.pop()
-            while stack_element != '(':
-                output.append(stack_element)
+            try:
                 stack_element = stack.pop()
+                while stack_element != '(':
+                    output.append(stack_element)
+                    stack_element = stack.pop()
+            except IndexError:
+                error_msg = "No matching left parenthesis for the right parenthesis at {}".format(i)
+                raise MismatchedParentheses(error_msg)
+        else:
+            raise UnrecognizedToken()
         i += 1
     while stack:
-        output.append(stack.pop())
+        top = stack.pop()
+        if top == '(':
+            raise MismatchedParentheses("Unclosed left parenthesis.")
+        output.append(top)
     return output
 
 if __name__ == "__main__":
