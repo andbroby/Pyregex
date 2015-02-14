@@ -124,9 +124,13 @@ def post2nfa(postfix):
         elif e == '|':
             e2 = stack.pop()
             e1 = stack.pop()
-    nfa = stack.pop()
+            
     final_state = State("FINAL")
-    nfa.out.join(final_state)
+    if stack:
+        nfa = stack.pop()
+        nfa.out.join(final_state)
+    else:
+        nfa = NFAFragment(final_state, final_state)
     return nfa
 
 def match(pattern, string):
