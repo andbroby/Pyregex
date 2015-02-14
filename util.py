@@ -122,10 +122,15 @@ def post2nfa(postfix):
             f = NFAFragment(f1.start, f2.out)
             stack.append(NFAFragment(f1.start, f2.out))
         elif e == '|':
-            e2 = stack.pop()
-            e1 = stack.pop()
+            f2 = stack.pop()
+            f1 = stack.pop()
+            print(f1.out)
+            s = State('#e')
+            s.join(f1.start)
+            s.join(f2.start)
+            stack.append(NFAFragment(s, f1.out.extend(f2.out)))
             
-    final_state = State("FINAL")
+    final_state = State("#F")
     if stack:
         nfa = stack.pop()
         nfa.out.join(final_state)
