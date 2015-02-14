@@ -100,9 +100,6 @@ def post2nfa(postfix):
     states = []
     alphabet = [letter for letter in string.letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
 
-    transition_table = {}
-    transition_table["F"] = dict([(c, None) for c in alphabet])
-    state_number = 1
     for e in postfix:
         if e in alphabet:
             s = State(e)
@@ -110,10 +107,9 @@ def post2nfa(postfix):
         elif e == '.':
             f2 = stack.pop()
             f1 = stack.pop()
-            start = f1.start
-            out = f2.out
-            start.join(out)
-            stack.append(NFAFragment(start, out))
+            f1.out.join(f2.start)
+            f = NFAFragment(f1.start, f2.out)
+            stack.append(NFAFragment(f1.start, f2.out))
         elif e == '|':
             e2 = stack.pop()
             e1 = stack.pop()
@@ -129,10 +125,4 @@ def match(pattern, string):
     return nfa.match(string)
 
 if __name__ == "__main__":
-    infix = sys.argv[1]
-    postfix = re_to_postfix(infix)
-    nfa = post2nfa(postfix)
-    print(nfa.start)
-    print(nfa.out)
-    test = NFA(nfa)
     print(match(sys.argv[1], sys.argv[2]))
