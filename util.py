@@ -83,6 +83,17 @@ def re_to_postfix(infix):
             except IndexError:
                 error_msg = "No matching left parenthesis for the right parenthesis at {}".format(i)
                 raise MismatchedParentheses(error_msg)
+            j = i+1
+            if j < len(infix) and infix[j] not in operators:
+                while stack and stack[-1] in operators:
+                    o2 = stack[-1]
+                    if precedence[o2] >= precedence['.']:
+                        output.append(stack.pop())
+                    else:
+                        break
+                stack.append('.')
+            i = j
+            continue
         else:
             raise UnrecognizedToken()
         i += 1
@@ -125,4 +136,5 @@ def match(pattern, string):
     return nfa.match(string)
 
 if __name__ == "__main__":
-    print(match(sys.argv[1], sys.argv[2]))
+    print(re_to_postfix(sys.argv[1]))
+    #print(match(sys.argv[1], sys.argv[2]))
