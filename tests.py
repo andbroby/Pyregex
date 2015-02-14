@@ -1,5 +1,6 @@
 import unittest
-from util import re_to_postfix
+import re
+from util import re_to_postfix, match
 from parsing_exceptions import MismatchedParentheses, UnrecognizedToken
 
 class Re_to_postfix_test(unittest.TestCase):
@@ -17,6 +18,14 @@ class Re_to_postfix_test(unittest.TestCase):
     def test_implicit_concatenation(self):
         self.assertEqual(re_to_postfix('abc'), ['a', 'b', 'c', '.', '.'])
         self.assertEqual(re_to_postfix('a(bb)+a'), ['a','b','b','.','+','.','a','.'])
+
+class Re_matching_tests(unittest.TestCase):
+    def boolre(self, pattern, string):
+        return bool(re.match(pattern, string))
+    
+    def test_concatenation_matching(self):
+        self.assertEqual(match('ab', 'ab'), self.boolre('ab', 'ab'))
+        self.assertEqual(match('a(bb)(cd)', 'abbcd'), self.boolre('a(bb)(cd)', 'abbcd'))
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ def re_to_postfix(infix):
 
     i = 0;
     while i < len(infix):
-        if __name__ == "__main__" and len(sys.argv) > 2:
+        if __name__ == "__main__" and sys.argv[-1] == '--v':
             print(infix)
             print(" "*i + "^")
             print("Stack: " + str(stack))
@@ -96,26 +96,43 @@ def re_to_postfix(infix):
 def post2nfa(postfix):
     """ Takes in a postfix expression and converts it into an NFA"""
 
-    nfa = NFA()
-    match = State(None, None, "MATCH")
     stack = []
     states = []
     alphabet = [letter for letter in string.letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
-    
+
+    transition_table = {}
+    transition_table["F"] = dict([(c, None) for c in alphabet])
+    state_number = 1
     for e in postfix:
         if e in alphabet:
-            pass
+            s = State(e)
+            stack.append(NFAFragment(s, s))
         elif e == '.':
-            e2 = stack.pop()
-            e1 = stack.pop()
+            f2 = stack.pop()
+            f1 = stack.pop()
+            start = f1.start
+            out = f2.out
+            start.join(out)
+            stack.append(NFAFragment(start, out))
         elif e == '|':
             e2 = stack.pop()
             e1 = stack.pop()
-    
-    return NFA
+    nfa = stack.pop()
+    final_state = State("FINAL")
+    nfa.out.join(final_state)
+    return nfa
+
+def match(pattern, string):
+    pattern_postfix = re_to_postfix(pattern)
+    nfa_frag = post2nfa(pattern_postfix)
+    nfa = NFA(nfa_frag)
+    return nfa.match(string)
 
 if __name__ == "__main__":
     infix = sys.argv[1]
     postfix = re_to_postfix(infix)
     nfa = post2nfa(postfix)
-    print(step(nfa))
+    print(nfa.start)
+    print(nfa.out)
+    test = NFA(nfa)
+    print(match(sys.argv[1], sys.argv[2]))
