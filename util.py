@@ -1,4 +1,5 @@
 from parsing_exceptions import MismatchedParentheses
+from classes import *
 import string
 import sys
 
@@ -92,7 +93,29 @@ def re_to_postfix(infix):
         output.append(top)
     return output
 
+def post2nfa(postfix):
+    """ Takes in a postfix expression and converts it into an NFA"""
+
+    nfa = NFA()
+    match = State(None, None, "MATCH")
+    stack = []
+    states = []
+    alphabet = [letter for letter in string.letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
+    
+    for e in postfix:
+        if e in alphabet:
+            pass
+        elif e == '.':
+            e2 = stack.pop()
+            e1 = stack.pop()
+        elif e == '|':
+            e2 = stack.pop()
+            e1 = stack.pop()
+    
+    return NFA
+
 if __name__ == "__main__":
     infix = sys.argv[1]
     postfix = re_to_postfix(infix)
-    print("".join(postfix))
+    nfa = post2nfa(postfix)
+    print(step(nfa))
