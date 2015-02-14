@@ -26,6 +26,9 @@ class Re_matching_tests(unittest.TestCase):
     def test_concatenation_matching(self):
         self.assertEqual(match('ab', 'ab'), self.boolre('ab', 'ab'))
         self.assertEqual(match('a(bb).(cd)', 'abbcd'), self.boolre('a(bb)(cd)', 'abbcd'))
+        self.assertEqual(match('', ''), self.boolre('',''))
+        self.assertEqual(match('(a(b))', 'ab'), self.boolre('(a(b))', 'ab'))
+        self.assertEqual(match('ab(cd).ba(dc(cd))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
 
 
 if __name__ == '__main__':
