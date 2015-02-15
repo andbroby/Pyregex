@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from parsing_exceptions import MismatchedParentheses
+from parsing_exceptions import MismatchedParentheses, UnrecognizedToken
 from classes import *
 import string
 import sys
@@ -14,7 +14,7 @@ def re_to_postfix(infix):
         '?': 3
     }
     operators = precedence.keys()
-    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
+    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]] + [' ']
     binary_operators = ['|', '.']
     unary_operators = ['?', '*', '+']
     
@@ -111,7 +111,7 @@ def post2nfa(postfix):
 
     stack = []
     states = []
-    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
+    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]] + [' ']
     for e in postfix:
         if e in alphabet:
             s = State(e)
