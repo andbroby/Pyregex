@@ -1,6 +1,4 @@
 import random
-import Queue
-import threading
 
 class State():
     def __init__(self, token):
@@ -27,7 +25,6 @@ class NFAFragment():
             self.out.append(out)
 
 class NFA():
-    q = Queue.Queue()
     def __init__(self, fragment):
         self.fragment = fragment
         self.current_states = [fragment.start]
