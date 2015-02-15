@@ -50,9 +50,12 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('a?', 'a'), self.boolre('a?', 'a'))
         self.assertEqual(match('a?', ''), self.boolre('a?', ''))
         self.assertEqual(match('(ab)?.(ab)', 'ab'), self.boolre('(ab)?(ab)', 'ab'))
-        self.assertEquals(match('(ab)?.(ab)', 'abab'), self.boolre('(ab)?(ab)', 'abab'))
-        self.assertEquals(match('(a?b?c?(def)?)', 'acdef'), self.boolre('(a?b?c?(def)?)', 'acdef'))
-        self.assertEquals(match('((abc)?.(abab)?)?', 'abcabab'), self.boolre('((abc)?(abab)?)?', 'abcabab'))
+        self.assertEqual(match('(ab)?.(ab)', 'abab'), self.boolre('(ab)?(ab)', 'abab'))
+        self.assertEqual(match('(a?b?c?(def)?)', 'acdef'), self.boolre('(a?b?c?(def)?)', 'acdef'))
+        self.assertEqual(match('((abc)?.(abab)?)?', 'abcabab'), self.boolre('((abc)?(abab)?)?', 'abcabab'))
+        self.assertEqual(match('(a?b?c?).((ab)?bc)', 'ababbc'), self.boolre('(a?b?c?)((ab)?bc)', 'ababbc'))
+        self.assertEqual(match('andreas broby?', 'andreas'), self.boolre('andreas broby?', 'andreas'))
+        self.assertEqual(match('Does this work: no? yes?', 'Does this work: no'), self.boolre('Does this work: no? yes?', 'Does this work: no'))
 
 
 if __name__ == '__main__':
