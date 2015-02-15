@@ -8,6 +8,8 @@ class State():
         self.transitions[self.token].append(state)
     def __str__(self):
         return str(self.transitions)
+    def __repr_(self):
+        return str(self.transitions)
     def __bool__(self):
         return False
 
@@ -25,8 +27,6 @@ class NFAFragment():
             self.out.append(out)
 
 class NFA():
-    trying_epsilon = False
-    
     def __init__(self, fragment):
         self.fragment = fragment
         self.current_states = [fragment.start]
@@ -44,6 +44,9 @@ class NFA():
         return False
 
     def step(self, c, guess=None, epsilon_state=None):
+        if isinstance(self.current_states[0], FinalState):
+            return True
+        
         if self.is_at_epsilon():
             epsilon_state = self.current_states[:]
             choices = len(self.current_states[0].transitions["#e"])
@@ -52,7 +55,12 @@ class NFA():
             self.current_states = [next_state]
             self.step(c, guess, epsilon_state)
             return True
-            
+        elif guess is not None:
+            new_guess = (guess + 1) % 2
+            next_state = epsilon_state[0].transitions["#e"][new_guess]
+            self.current_states = [next_state]
+            self.step(c)
+            return True
         elif self.has_valid_move(c):
             new_states = []
             for state in self.current_states:
@@ -61,18 +69,10 @@ class NFA():
             self.current_states = new_states
             return True
 
-        elif guess is not None:
-            new_guess = (guess + 1) % 2
-            next_state = epsilon_state[0].transitions["#e"][new_guess]
-            self.current_states = [next_state]
-            self.step(c)
-            return True
         return False
         
     def match(self, string):
         for c in string:
-            if isinstance(self.current_states[0], FinalState):
-                return True
             if not self.step(c):
                 return False
         return any(self.current_states)
