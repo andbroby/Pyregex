@@ -112,7 +112,6 @@ def post2nfa(postfix):
     stack = []
     states = []
     alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
-
     for e in postfix:
         if e in alphabet:
             s = State(e)
@@ -120,8 +119,7 @@ def post2nfa(postfix):
         elif e == '.':
             f2 = stack.pop()
             f1 = stack.pop()
-            for state in f1.out:
-                state.join(f2.start)
+            f1.out[0].join(f2.start)
             f = NFAFragment(f1.start, f2.out)
             stack.append(NFAFragment(f1.start, f2.out))
         elif e == '|':
@@ -136,10 +134,9 @@ def post2nfa(postfix):
             f = stack.pop()
             s = State('#e')
             s.join(f.start)
-            f.out = [s]
-            out_state = State('#e')
-            s.join(out_state)
-            stack.append(NFAFragment(s,out_state))
+            for out_state in f.out:
+                out_state.join(s)
+            stack.append(NFAFragment(s,s))
             
     final_state = FinalState()
     if stack:
