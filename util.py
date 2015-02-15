@@ -143,7 +143,6 @@ def post2nfa(postfix):
             s.join(f.start)
             f1 = NFAFragment(s, s)
             stack.append(f1)
-                         
     final_state = FinalState()
     if stack:
         final_frag = stack.pop()

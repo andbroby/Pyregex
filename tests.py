@@ -45,7 +45,14 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('((aa)*.(bb)*)*', 'aa'), self.boolre('((aa)*.(bb)*)*', 'aa'))
         self.assertEqual(match('((aa)*.(bb)*)*', 'bbc'), self.boolre('((aa)*.(bb)*)*', 'bbc'))
         self.assertEqual(match('((aa)*.(bb)*)*', 'aabb'), self.boolre('((aa)*.(bb)*)*', 'aabb'))
-        self.assertEqual(match('((aa)*.(bb)*)*', ''), self.boolre('((aa)*.(bb)*)*', '')) 
+        self.assertEqual(match('((aa)*.(bb)*)*', ''), self.boolre('((aa)*.(bb)*)*', ''))
+    def test_one_or_more(self):
+        self.assertEqual(match('a?', 'a'), self.boolre('a?', 'a'))
+        self.assertEqual(match('a?', ''), self.boolre('a?', ''))
+        self.assertEqual(match('(ab)?.(ab)', 'ab'), self.boolre('(ab)?(ab)', 'ab'))
+        self.assertEquals(match('(ab)?.(ab)', 'abab'), self.boolre('(ab)?(ab)', 'abab'))
+        self.assertEquals(match('(a?b?c?(def)?)', 'acdef'), self.boolre('(a?b?c?(def)?)', 'acdef'))
+        self.assertEquals(match('((abc)?.(abab)?)?', 'abcabab'), self.boolre('((abc)?(abab)?)?', 'abcabab'))
 
 
 if __name__ == '__main__':

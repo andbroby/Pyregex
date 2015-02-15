@@ -1,4 +1,6 @@
 import random
+import Queue
+import threading
 
 class State():
     def __init__(self, token):
@@ -25,14 +27,14 @@ class NFAFragment():
             self.out.append(out)
 
 class NFA():
-    counted = 0
+    q = Queue.Queue()
     def __init__(self, fragment):
         self.fragment = fragment
         self.current_states = [fragment.start]
 
     def has_valid_move(self, c):
         for state in self.current_states:
-            if c in state.transitions:
+            if c in state.transitions and state.transitions[c]:
                 return True
         return False
 
@@ -41,33 +43,34 @@ class NFA():
             if "#e" in state.transitions:
                 return True
         return False
-
-    def step(self, c, guess=None, epsilon_state=None, epsilon_token=None):
-        if isinstance(self.current_states[0], FinalState):
-            return True
+    
+    def step(self, string, guess=None, epsilon_state=None, epsilon_token=None,i=0):
+        if isinstance(self.current_states[0], FinalState) or i == string:
+            return
+        if i == len(string):
+            return
+        c = string[i]
         if self.is_at_epsilon():
             epsilon_state = self.current_states[:]
             choices = len(self.current_states[0].transitions["#e"])
             guess = random.randint(0, choices - 1)
             next_state = self.current_states[0].transitions["#e"][guess]
             self.current_states = [next_state]
-            return self.step(c, guess, epsilon_state, c)
+            self.step(c, guess, epsilon_state, c)
         elif self.has_valid_move(c):
             new_states = []
             for state in self.current_states:
                 if c in state.transitions:
                     new_states.extend(state.transitions[c])
             self.current_states = new_states
-            return True
+            self.step(string,i=i+1)
         elif guess is not None:
             new_guess = (guess + 1) % len(epsilon_state[0].transitions["#e"])
             next_state = epsilon_state[0].transitions["#e"][new_guess]
             self.current_states = [next_state]
-            return self.step(epsilon_token)
-        return False
+            self.step(epsilon_token, epsilon_state = epsilon_state, i = i + 1)
+        return
         
     def match(self, string):
-        for c in string:
-            if not self.step(c):
-                return False
+        self.step(string)
         return any(self.current_states)
