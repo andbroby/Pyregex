@@ -67,11 +67,12 @@ class NFA():
             self.current_states = [next_state]
             self.step(c)
             return True
-                    
         return False
         
     def match(self, string):
         for c in string:
+            if isinstance(self.current_states[0], FinalState):
+                return True
             if not self.step(c):
                 return False
         return any(self.current_states)

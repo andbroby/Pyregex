@@ -31,6 +31,14 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('ab(cd).ba(dc(cd))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
         self.assertEqual(match('aaaa(b).(b).c(d)', 'aaaabbcd'), self.boolre('aaaa(b)(b)c(d)', 'aaaabbcd'))
 
+    def test_alternation_matching(self):
+        self.assertEqual(match('a|b', 'a'), self.boolre('a|b', 'a'))
+        self.assertEqual(match('a|b', 'b'), self.boolre('a|b', 'b'))
+        self.assertEqual(match('(ab)|(bc)', 'ab'), self.boolre('(ab)|(bc)', 'ab'))
+        self.assertEqual(match('(ab)|(bc)', 'bc'), self.boolre('(ab)|(bc)', 'bc'))
+        self.assertEquals(match('(ab).(a|b)', 'aba'), self.boolre('(ab)(a|b)', 'aba'))
+        self.assertEquals(match('(ab).(a|b)', 'abb'), self.boolre('(ab)(a|b)', 'abb'))
+
 
 if __name__ == '__main__':
     unittest.main()
