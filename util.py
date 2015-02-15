@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from parsing_exceptions import MismatchedParentheses
 from classes import *
 import string
@@ -12,7 +14,7 @@ def re_to_postfix(infix):
         '?': 3
     }
     operators = precedence.keys()
-    alphabet = [letter for letter in string.letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
+    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
     binary_operators = ['|', '.']
     unary_operators = ['?', '*', '+']
     
@@ -109,7 +111,7 @@ def post2nfa(postfix):
 
     stack = []
     states = []
-    alphabet = [letter for letter in string.letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
+    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]]
 
     for e in postfix:
         if e in alphabet:
@@ -118,30 +120,33 @@ def post2nfa(postfix):
         elif e == '.':
             f2 = stack.pop()
             f1 = stack.pop()
-            f1.out.join(f2.start)
+            for state in f1.out:
+                state.join(f2.start)
             f = NFAFragment(f1.start, f2.out)
             stack.append(NFAFragment(f1.start, f2.out))
         elif e == '|':
             f2 = stack.pop()
             f1 = stack.pop()
-            print(f1.out)
             s = State('#e')
             s.join(f1.start)
             s.join(f2.start)
-            stack.append(NFAFragment(s, f1.out.extend(f2.out)))
+            f1.out.extend(f2.out)
+            stack.append(NFAFragment(s, f1.out))
             
-    final_state = State("#F")
+    final_state = FinalState()
     if stack:
-        nfa = stack.pop()
-        nfa.out.join(final_state)
+        final_frag = stack.pop()
+        for state in final_frag.out:
+            state.join(final_state)
+        nfafrag = NFAFragment(final_frag.start, final_frag.out)
     else:
-        nfa = NFAFragment(final_state, final_state)
+        nfafrag = NFAFragment(final_state, final_state)
+    nfa = NFA(nfafrag)
     return nfa
 
 def match(pattern, string):
     pattern_postfix = re_to_postfix(pattern)
-    nfa_frag = post2nfa(pattern_postfix)
-    nfa = NFA(nfa_frag)
+    nfa = post2nfa(pattern_postfix)
     return nfa.match(string)
 
 if __name__ == "__main__":
