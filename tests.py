@@ -38,6 +38,14 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('(ab)|(bc)', 'bc'), self.boolre('(ab)|(bc)', 'bc'))
         self.assertEquals(match('(ab).(a|b)', 'aba'), self.boolre('(ab)(a|b)', 'aba'))
         self.assertEquals(match('(ab).(a|b)', 'abb'), self.boolre('(ab)(a|b)', 'abb'))
+    def test_star_matching(self):
+        self.assertEqual(match('a*', ''), self.boolre('a*', ''))
+        self.assertEqual(match('a*', 'a'), self.boolre('a*', 'a'))
+        self.assertEqual(match('(a*b).bc(bb)*', 'bbc'), self.boolre('(a*b)bc(bb)*', 'bbc'))
+        self.assertEqual(match('((aa)*.(bb)*)*', 'aa'), self.boolre('((aa)*.(bb)*)*', 'aa'))
+        self.assertEqual(match('((aa)*.(bb)*)*', 'bbc'), self.boolre('((aa)*.(bb)*)*', 'bbc'))
+        self.assertEqual(match('((aa)*.(bb)*)*', 'aabb'), self.boolre('((aa)*.(bb)*)*', 'aabb'))
+        self.assertEqual(match('((aa)*.(bb)*)*', ''), self.boolre('((aa)*.(bb)*)*', '')) 
 
 
 if __name__ == '__main__':
