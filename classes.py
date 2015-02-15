@@ -56,7 +56,7 @@ class NFA():
             self.step(c, guess, epsilon_state)
             return True
         elif guess is not None:
-            new_guess = (guess + 1) % 2
+            new_guess = (guess + 1) % len(epsilon_state[0].transitions["#e"])
             next_state = epsilon_state[0].transitions["#e"][new_guess]
             self.current_states = [next_state]
             self.step(c)
