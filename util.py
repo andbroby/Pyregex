@@ -119,7 +119,8 @@ def post2nfa(postfix):
         elif e == '.':
             f2 = stack.pop()
             f1 = stack.pop()
-            f1.out[0].join(f2.start)
+            for out_state in f1.out:
+                out_state.join(f2.start)
             f = NFAFragment(f1.start, f2.out)
             stack.append(NFAFragment(f1.start, f2.out))
         elif e == '|':
@@ -135,13 +136,14 @@ def post2nfa(postfix):
             s = State('#e')
             s.join(f.start, f.start.token)
             for out_state in f.out:
-                out_state.join(s)
+                out_state.transitions = {"#e": [s]}
             stack.append(NFAFragment(s,s))
         elif e == '?':
             f = stack.pop()
             s = State("#e")
             s.join(f.start)
-            f1 = NFAFragment(s, s)
+            f.out.append(s)
+            f1 = NFAFragment(s, f.out)
             stack.append(f1)
     final_state = FinalState("#F")
     if stack:
