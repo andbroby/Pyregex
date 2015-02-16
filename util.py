@@ -34,25 +34,6 @@ def re_to_postfix(infix):
         e = infix[i]
         if e in alphabet:
             output.append(e)
-            j = i + 1
-            while j < len(infix) and (infix[j] in alphabet or infix[j] == '('):
-                if infix[j] in alphabet:
-                    output.append(infix[j])
-                o1 = '.'
-                while stack and stack[-1] in operators:
-                    o2 = stack[-1]
-                    if precedence[o2] >= precedence[o1]:
-                        output.append(stack.pop())
-                    else:
-                        break
-                stack.append(o1)
-                if infix[j] == '(':
-                    stack.append(infix[j])
-                    j += 1
-                    break
-                j += 1
-            i = j
-            continue
         elif e in operators:
             o1 = e
             while stack and stack[-1] in operators:
@@ -63,17 +44,6 @@ def re_to_postfix(infix):
                 else:
                     break
             stack.append(e)
-            
-            if e in unary_operators and i != len(infix)-1 and infix[i+1] in alphabet:
-                o1 = '.'
-                while stack and stack[-1] in operators:
-                    o2 = stack[-1]
-                    if precedence[o2] >= precedence[o1]:
-                        output.append(stack.pop())
-                    else:
-                        break
-                stack.append(o1)
-                
         elif e == '(':
             stack.append(e)
         elif e == ')':
@@ -158,8 +128,9 @@ def post2nfa(postfix):
 
 def match(pattern, string):
     pattern_postfix = re_to_postfix(pattern)
+    print(pattern_postfix)
     nfa = post2nfa(pattern_postfix)
-    return nfa.match(string)
+#    return nfa.match(string)
 
 if __name__ == "__main__":
     print(re_to_postfix(sys.argv[1]))
