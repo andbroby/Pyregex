@@ -33,11 +33,14 @@ class NFAFragment():
             self.out.extend(out)
         else:
             self.out.append(out)
+        
 
 class NFA():
     saved_NFA_state = {'index': None,
                        'state': None,
                        'guess': None}
+
+    saved_states_stack = []
     
     def __init__(self, fragment):
         self.fragment = fragment
@@ -62,56 +65,54 @@ class NFA():
         print("\nNEW FUNCTION CALL")
         print("We have choices: " + str(self.current_states[0].transitions))
         print("Current index: " + str(i))
+        raw_input()
 
         if isinstance(self.current_states[0], FinalState):
-            print("Returning")
+            return
+        elif not self.is_at_epsilon and i >= len(string):
             return
 
-        if not i < len(string) or (len(string) == 0 and isinstance(self.current_states[0], FinalState)):
-            print("End of input")
-            raw_input()
-            return
+        if i < len(string):
+            c = string[i]
+        else:
+            c = ''
         
         if self.is_at_epsilon():
             print("At epsilon state: " + str(self.current_states[0].transitions))
-            self.saved_NFA_state['state'] = self.current_states[:]
-            self.saved_NFA_state['index'] = i
+
+            saved_state = {}
+            saved_state['state'] = self.current_states[:]
+            saved_state['index'] = i
             if c is not None and c in self.current_states[0].transitions:
                 print("We can consume a token and transition with a character, so that's what we're doing")
                 self.current_states = self.current_states[0].transitions[c]
+                raw_input()
                 return self.step(string, i+1)
             choices = len(self.current_states[0].transitions["#e"])
             guess = random.randint(0, choices - 1)
-            self.saved_NFA_state['guess'] = guess
+            saved_state['guess'] = guess
             next_state = self.current_states[0].transitions["#e"][guess]
             print("We chose " + str(next_state.transitions))
-            raw_input()
+            self.saved_states_stack.append(saved_state)
             self.current_states = [next_state]
             return self.step(string, i)
-
-        if len(string) == 0:
-            c = ''
-        else:
-            c = string[i]
-            
-        if self.has_valid_move(c):
+        elif self.has_valid_move(c):
             new_states = []
             for state in self.current_states:
                 if c in state.transitions:
                     new_states.extend(state.transitions[c])
             self.current_states = new_states
             return self.step(string, i+1)
-        elif any([value for key,value in self.saved_NFA_state.items()]):
-            saved_index = self.saved_NFA_state["index"]
-            saved_state = self.saved_NFA_state["state"]
-            saved_guess = self.saved_NFA_state["guess"]
+        elif self.saved_states_stack:
+            saved_NFA_state = self.saved_states_stack.pop()
+            saved_index = saved_NFA_state["index"]
+            saved_state = saved_NFA_state["state"]
+            saved_guess = saved_NFA_state["guess"]
             new_guess = (saved_guess + 1) % len(saved_state[0].transitions["#e"])
             next_state = saved_state[0].transitions["#e"][new_guess]
             print("Reverting state to " + str(saved_state))
             print("New state is " + str(next_state))
             self.current_states = [next_state]
-            for key in self.saved_NFA_state:
-                self.saved_NFA_state[key] = None
             return self.step(string, saved_index)
         return
         
