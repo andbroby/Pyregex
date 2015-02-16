@@ -23,7 +23,7 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('a.b', 'ab'), self.boolre('ab', 'ab'))
         self.assertEqual(match('a.(b.b).(c.d)', 'a.b.b.c.d'), self.boolre('a(bb)(cd)', 'abbcd'))
         self.assertEqual(match('', ''), self.boolre('',''))
-        self.assertEqual(match('(a.(b))', 'a.b'), self.boolre('(a(b))', 'ab'))
+        self.assertEqual(match('(a.(b))', 'ab'), self.boolre('(a(b))', 'ab'))
         self.assertEqual(match('a.b(c.d).b.a.(d.c(c.d))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
         self.assertEqual(match('a.a.a.a.(b).(b).c.(d)', 'aaaabbcd'), self.boolre('aaaa(b)(b)c(d)', 'aaaabbcd'))
 
