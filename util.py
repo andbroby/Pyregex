@@ -128,9 +128,8 @@ def post2nfa(postfix):
 
 def match(pattern, string):
     pattern_postfix = re_to_postfix(pattern)
-    print(pattern_postfix)
     nfa = post2nfa(pattern_postfix)
-#    return nfa.match(string)
+    return nfa.match(string)
 
 if __name__ == "__main__":
     print(re_to_postfix(sys.argv[1]))
