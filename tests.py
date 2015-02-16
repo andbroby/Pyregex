@@ -21,10 +21,10 @@ class Re_matching_tests(unittest.TestCase):
     
     def test_concatenation_matching(self):
         self.assertEqual(match('a.b', 'ab'), self.boolre('ab', 'ab'))
-        self.assertEqual(match('a.(b.b).(c.d)', 'a.b.b.c.d'), self.boolre('a(bb)(cd)', 'abbcd'))
+        self.assertEqual(match('a.(b.b).(c.d)', 'abbcd'), self.boolre('a(bb)(cd)', 'abbcd'))
         self.assertEqual(match('', ''), self.boolre('',''))
         self.assertEqual(match('(a.(b))', 'ab'), self.boolre('(a(b))', 'ab'))
-        self.assertEqual(match('a.b(c.d).b.a.(d.c(c.d))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
+        self.assertEqual(match('a.b.(c.d).b.a.(d.c.(c.d))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
         self.assertEqual(match('a.a.a.a.(b).(b).c.(d)', 'aaaabbcd'), self.boolre('aaaa(b)(b)c(d)', 'aaaabbcd'))
 
     def test_alternation_matching(self):
@@ -50,8 +50,7 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('(a?.b?.c?.(d.e.f)?)', 'acdef'), self.boolre('(a?b?c?(def)?)', 'acdef'))
         self.assertEqual(match('((a.b.c)?.(a.b.a.b)?)?', 'abcabab'), self.boolre('((abc)?(abab)?)?', 'abcabab'))
         self.assertEqual(match('(a?.b?.c?).((a.b)?.bc)', 'ababbc'), self.boolre('(a?b?c?)((ab)?bc)', 'ababbc'))
-        self.assertEqual(match('a.n.d.r.e.a.s. .b.r.o.b.y?', 'andreas'), self.boolre('andreas broby?', 'andreas'))
-        self.assertEqual(match('D.o.e.s. .t.h.i.s. .w.o.r.k.:. .n.o?. .y.e.s?', 'Does this work: no'), self.boolre('Does this work: no? yes?', 'Does this work: no'))
+        self.assertEqual(match('D.o.e.s. .t.h.i.s. .w.o.r.k. .(n.o)?.(y.e.s)?', 'Does this work no'), self.boolre('Does this work (no)?(yes)?', 'Does this work no'))
 
 
 if __name__ == '__main__':
