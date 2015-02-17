@@ -99,7 +99,6 @@ class NFA():
             next_state = saved_state[0].transitions["#e"][new_guess]
             self.current_states = [next_state]
             return self.step(string, saved_index)
-        return
 
     def match(self, string):
         self.step(string)
