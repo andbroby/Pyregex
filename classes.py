@@ -1,9 +1,11 @@
 import random
 
+
 class State():
     def __init__(self, token):
         self.token = token
-        self.transitions = {token:[]}
+        self.transitions = {token: []}
+
     def join(self, state, token=None):
         if token:
             if token in self.transitions:
@@ -12,11 +14,14 @@ class State():
                 self.transitions[token] = [state]
         else:
             self.transitions[self.token].append(state)
+
     def __str__(self):
         return str(self.transitions)
 
+
 class FinalState(State):
     pass
+
 
 class NFAFragment():
     def __init__(self, start, out):
@@ -26,11 +31,11 @@ class NFAFragment():
             self.out.extend(out)
         else:
             self.out.append(out)
-        
+
 
 class NFA():
     saved_states_stack = []
-    
+
     def __init__(self, fragment):
         self.fragment = fragment
         self.current_states = [fragment.start]
@@ -46,10 +51,13 @@ class NFA():
             if "#e" in state.transitions:
                 return True
         return False
-    
-    def step(self, string, i = 0, epsilon_state=None, guess=None, saved_index=None):
+
+    def step(self, string, i=0,
+             epsilon_state=None,
+             guess=None,
+             saved_index=None):
         c = None
-        
+
         if isinstance(self.current_states[0], FinalState):
             return
         elif not self.is_at_epsilon and i >= len(string):
@@ -59,7 +67,7 @@ class NFA():
             c = string[i]
         else:
             c = ''
-        
+
         if self.is_at_epsilon():
             saved_state = {}
             saved_state['state'] = self.current_states[:]
@@ -67,8 +75,8 @@ class NFA():
             if c is not None and c in self.current_states[0].transitions:
                 self.current_states = self.current_states[0].transitions[c]
                 return self.step(string, i+1)
-            choices = len(self.current_states[0].transitions["#e"])
-            guess = random.randint(0, choices - 1)
+            nchoices = len(self.current_states[0].transitions["#e"])
+            guess = random.randint(0, nchoices - 1)
             saved_state['guess'] = guess
             next_state = self.current_states[0].transitions["#e"][guess]
             self.saved_states_stack.append(saved_state)
@@ -86,12 +94,13 @@ class NFA():
             saved_index = saved_NFA_state["index"]
             saved_state = saved_NFA_state["state"]
             saved_guess = saved_NFA_state["guess"]
-            new_guess = (saved_guess + 1) % len(saved_state[0].transitions["#e"])
+            nchoices = len(saved_state[0].transitions["#e"])
+            new_guess = (saved_guess + 1) % nchoices
             next_state = saved_state[0].transitions["#e"][new_guess]
             self.current_states = [next_state]
             return self.step(string, saved_index)
         return
-        
+
     def match(self, string):
         self.step(string)
         for state in self.current_states:

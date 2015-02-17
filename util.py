@@ -1,7 +1,12 @@
 from parsing_exceptions import MismatchedParentheses, UnrecognizedToken
-from classes import *
+from classes import NFA, NFAFragment, State, FinalState
 import string
 import sys
+
+numerics = [str(i) for i in range(10)]
+letters = [letter for letter in string.ascii_letters] + [' ']
+alphabet = numerics + letters
+
 
 def re_to_postfix(infix):
     precedence = {
@@ -12,16 +17,13 @@ def re_to_postfix(infix):
         '?': 3
     }
     operators = precedence.keys()
-    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]] + [' ']
     binary_operators = ['|', '.']
     unary_operators = ['?', '*', '+']
-    
+
     stack = []
     output = []
 
-    read_entries = []
-
-    i = 0;
+    i = 0
     while i < len(infix):
         if __name__ == "__main__" and sys.argv[-1] == '--v':
             print(infix)
@@ -51,7 +53,8 @@ def re_to_postfix(infix):
                     output.append(stack_element)
                     stack_element = stack.pop()
             except IndexError:
-                error_msg = "No matching left parenthesis for the right parenthesis at {}".format(i)
+                error_msg = """No matching left parenthesis
+                               for the right parenthesis at {}""".format(i)
                 raise MismatchedParentheses(error_msg)
         else:
             raise UnrecognizedToken()
@@ -63,12 +66,11 @@ def re_to_postfix(infix):
         output.append(top)
     return output
 
+
 def post2nfa(postfix):
     """ Takes in a postfix expression and converts it into an NFA"""
 
     stack = []
-    states = []
-    alphabet = [letter for letter in string.ascii_letters] + [str(i) for i in [0,1,2,3,4,5,6,7,8,9]] + [' ']
     for e in postfix:
         if e in alphabet:
             s = State(e)
@@ -94,7 +96,7 @@ def post2nfa(postfix):
             s.join(f.start, f.start.token)
             for out_state in f.out:
                 out_state.transitions = {"#e": [s]}
-            stack.append(NFAFragment(s,s))
+            stack.append(NFAFragment(s, s))
         elif e == '?':
             f = stack.pop()
             s = State("#e")
@@ -119,6 +121,7 @@ def post2nfa(postfix):
         nfafrag = NFAFragment(final_state, final_state)
     nfa = NFA(nfafrag)
     return nfa
+
 
 def match(pattern, string):
     pattern_postfix = re_to_postfix(pattern)
