@@ -25,12 +25,6 @@ def re_to_postfix(infix):
 
     i = 0
     while i < len(infix):
-        if __name__ == "__main__" and sys.argv[-1] == '--v':
-            print(infix)
-            print(" "*i + "^")
-            print("Stack: " + str(stack))
-            print("Output: " + str(output))
-            raw_input()
         e = infix[i]
         if e in alphabet:
             output.append(e)
