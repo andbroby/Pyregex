@@ -26,7 +26,6 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('(a.(b))', 'ab'), self.boolre('(a(b))', 'ab'))
         self.assertEqual(match('a.b.(c.d).b.a.(d.c.(c.d))', 'abcdbadccd'), self.boolre('ab(cd)ba(dc(cd))', 'abcdbadccd'))
         self.assertEqual(match('a.a.a.a.(b).(b).c.(d)', 'aaaabbcd'), self.boolre('aaaa(b)(b)c(d)', 'aaaabbcd'))
-
     def test_alternation_matching(self):
         self.assertEqual(match('a|b', 'a'), self.boolre('a|b', 'a'))
         self.assertEqual(match('a|b', 'b'), self.boolre('a|b', 'b'))
@@ -42,7 +41,7 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('((a.a)*.(b.b)*)*', 'bbc'), self.boolre('((aa)*.(bb)*)*', 'bbc'))
         self.assertEqual(match('((a.a)*.(b.b)*)*', 'aabb'), self.boolre('((aa)*.(bb)*)*', 'aabb'))
         self.assertEqual(match('((a.a)*.(b.b)*)*', ''), self.boolre('((aa)*.(bb)*)*', ''))
-    def test_one_or_more(self):
+    def test_zero_or_one(self):
         self.assertEqual(match('a?', 'a'), self.boolre('a?', 'a'))
         self.assertEqual(match('a?', ''), self.boolre('a?', ''))
         self.assertEqual(match('(a.b)?.(a.b)', 'ab'), self.boolre('(ab)?(ab)', 'ab'))
@@ -51,7 +50,15 @@ class Re_matching_tests(unittest.TestCase):
         self.assertEqual(match('((a.b.c)?.(a.b.a.b)?)?', 'abcabab'), self.boolre('((abc)?(abab)?)?', 'abcabab'))
         self.assertEqual(match('(a?.b?.c?).((a.b)?.bc)', 'ababbc'), self.boolre('(a?b?c?)((ab)?bc)', 'ababbc'))
         self.assertEqual(match('D.o.e.s. .t.h.i.s. .w.o.r.k. .(n.o)?.(y.e.s)?', 'Does this work no'), self.boolre('Does this work (no)?(yes)?', 'Does this work no'))
-
+    def test_one_or_more(self):
+        self.assertEqual(match('a+', ''), self.boolre('a+', ''))
+        self.assertEqual(match('a+', 'a'), self.boolre('a+', 'a'))
+        self.assertEqual(match('(a.b)+.a.b', 'abab'), self.boolre('(ab)+ab', 'abab'))
+        self.assertEqual(match('a+', 'aaa'), self.boolre('a+', 'aaa'))
+        self.assertEqual(match('((a.b)+)+', 'abab'), self.boolre('((ab)+)+', 'abab'))
+        self.assertEqual(match('a+.b+.c+', 'abc'), self.boolre('a+b+c+', 'abc'))
+        self.assertEqual(match('a+.b+.c+', 'aabbcc'), self.boolre('a+b+c+', 'aabbcc'))
+        self.assertEqual(match('(a.b.(c.d)+)+', 'abcdcd'), self.boolre('(ab(cd)+)+', 'abcdcd'))
 
 if __name__ == '__main__':
     unittest.main()
