@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from parsing_exceptions import MismatchedParentheses, UnrecognizedToken
 from classes import *
 import string
@@ -126,7 +124,3 @@ def match(pattern, string):
     pattern_postfix = re_to_postfix(pattern)
     nfa = post2nfa(pattern_postfix)
     return nfa.match(string)
-
-if __name__ == "__main__":
-    print(re_to_postfix(sys.argv[1]))
-    #print(match(sys.argv[1], sys.argv[2]))
