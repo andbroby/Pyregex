@@ -103,6 +103,7 @@ def post2nfa(postfix):
             s = State('#e')
             for out in f.out:
                 out.join(s)
+            s.join(f.start)
             f1 = NFAFragment(f.start, s)
             stack.append(f1)
     final_state = FinalState("#F")
