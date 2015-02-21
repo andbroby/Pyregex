@@ -1,5 +1,6 @@
-The Romantic WTF public license.
 ```
+The Romantic WTF public license.
+---------------------------------
 a.k.a. version "<3" or simply v3
 
 Dear user,
