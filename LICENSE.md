@@ -1,5 +1,5 @@
 The Romantic WTF public license.
---------------------------------
+```
 a.k.a. version "<3" or simply v3
 
 Dear user,
@@ -40,3 +40,4 @@ I _cannot_ provide any warranty regarding
 its fitness for _any_ purpose. You
 acknowledge that I will not be held liable
 for any damage its use could incur.
+```
