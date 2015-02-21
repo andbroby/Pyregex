@@ -5,8 +5,7 @@ a.k.a. version "<3" or simply v3
 
 Dear user,
 
-The Romantic WTF Public License a.k.a version "<3"
-
+Pyregex
                          \
                           '.,__
                        \  /
@@ -24,7 +23,7 @@ do what the gentle caress you want to
    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~  
        with   this   lovely
           ~ ~ ~ ~ ~ ~ ~ ~
-           / license.
+           /  code.
           /  ~ ~ ~ ~
          /    Love,
    #    /      '.'
@@ -33,7 +32,7 @@ do what the gentle caress you want to
    ###
    #
 
--- the author.
+-- Andreas Broby.
 
 
 P.S.: Even though I poured my heart into this work,
